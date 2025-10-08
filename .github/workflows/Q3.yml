@@ -10,6 +10,10 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   create-archive:
@@ -38,9 +42,15 @@ jobs:
           git diff --cached --quiet && echo "Aucun changement à committer" && exit 0
           git commit -m "Add Q3_archive_java.txt"
 
-      - name: Push changes
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Push with retry on non-fast-forward
         run: |
-          git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git
-          git push origin HEAD:${{ github.ref_name }}
+          set -e
+          for i in 1 2 3; do
+            if git push origin HEAD:${{ github.ref_name }}; then
+              exit 0
+            fi
+            echo "Push rejeté (tentative $i). Rebase sur la dernière version distante puis retry…"
+            git pull --rebase origin ${{ github.ref_name }} || true
+          done
+          echo "Échec: impossible de pousser après 3 tentatives." >&2
+          exit 1
