@@ -36,7 +36,7 @@ jobs:
             exit 1
           fi
 
-          echo "Nom et prénom : Jules Dupont" > "$FILENAME"    # <-- remplace par tes nom/prénom
+          echo "Nom et prénom : Jules Chuzeville" > "$FILENAME"
           echo "" >> "$FILENAME"
           echo "Contenu de Q4.java :" >> "$FILENAME"
           echo "---------------------------------" >> "$FILENAME"
