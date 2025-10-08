@@ -24,7 +24,7 @@ jobs:
 
       - name: Generate Q2_archive_TOTO.txt
         run: |
-          echo "Nom et prénom : Jules Dupont" > Q2_archive_TOTO.txt
+          echo "Nom et prénom : Jules Chuzeville" > Q2_archive_TOTO.txt
           echo "Date et heure d'exécution : $(date)" >> Q2_archive_TOTO.txt
           echo "" >> Q2_archive_TOTO.txt
           echo "Contenu de TOTO.txt :" >> Q2_archive_TOTO.txt
