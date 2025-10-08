@@ -1,0 +1,60 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Q4_Chuzeville_Jules
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the "main" branch
+  push:
+    branches: [ "main" ]
+
+permissions:
+  contents: write
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  create-archive:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository (with token)
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Generate archive file with FR date in filename
+        run: |
+          DATE_STR=$(date +'%d-%m-%Y')
+          FILENAME="Q4_archive_date_${DATE_STR}.txt"
+
+          # Vérif que Q4.java existe
+          if [ ! -f Q4.java ]; then
+            echo "Le fichier Q4.java est introuvable à la racine du dépôt." >&2
+            exit 1
+          fi
+
+          echo "Nom et prénom : Jules Dupont" > "$FILENAME"    # <-- remplace par tes nom/prénom
+          echo "" >> "$FILENAME"
+          echo "Contenu de Q4.java :" >> "$FILENAME"
+          echo "---------------------------------" >> "$FILENAME"
+          cat Q4.java >> "$FILENAME"
+          echo "" >> "$FILENAME"
+          echo "---------------------------------" >> "$FILENAME"
+
+      - name: Configure Git identity
+        run: |
+          git config user.name "${{ github.actor }}"
+          git config user.email "${{ github.actor }}@users.noreply.github.com"
+
+      - name: Rebase on latest remote (avoid non-fast-forward)
+        run: |
+          git pull --rebase --autostash origin ${{ github.ref_name }} || true
+
+      - name: Commit changes
+        run: |
+          git add Q4_archive_date_*.txt
+          git diff --cached --quiet && echo "Aucun changement à committer" && exit 0
+          git commit -m "Add Q4 archive with dated filename"
+
+      - name: Push changes
+        run: |
+          git push origin HEAD:${{ github.ref_name }}
