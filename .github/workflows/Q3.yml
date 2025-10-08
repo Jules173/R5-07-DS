@@ -11,7 +11,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: push-to-${{ github.repository }}-${{ github.ref_name }}
   cancel-in-progress: false
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
