@@ -11,6 +11,10 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: push-to-${{ github.repository }}-${{ github.ref_name }}
+  cancel-in-progress: false
+
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
@@ -28,6 +32,10 @@ jobs:
       - name: Copy TOTO.txt to Q1_archive_TOTO.txt
         run: cp TOTO.txt Q1_archive_TOTO.txt
 
+      - name: Pull latest changes (avoid non-fast-forward)
+        run: |
+          git pull --rebase --autostash origin ${{ github.ref_name }} || true
+          
       # Runs a set of commands using the runners shell
       - name: Commit and push changes
         run: |
