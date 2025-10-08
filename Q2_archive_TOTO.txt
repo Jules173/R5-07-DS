@@ -1,0 +1,7 @@
+Nom et prénom : Jules Dupont
+Date et heure d'exécution : Wed Oct  8 13:42:22 UTC 2025
+
+Contenu de TOTO.txt :
+ceci est un fichier
+
+Taille de TOTO.txt : 20 octets
