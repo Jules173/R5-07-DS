@@ -20,10 +20,10 @@ jobs:
   create-archive:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
+      - name: Checkout repository (with token)
         uses: actions/checkout@v4
         with:
-          persist-credentials: false
+          token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
 
       - name: Generate Q2_archive_TOTO.txt
@@ -36,6 +36,10 @@ jobs:
           echo "" >> Q2_archive_TOTO.txt
           echo "Taille de TOTO.txt : $(wc -c < TOTO.txt) octets" >> Q2_archive_TOTO.txt
 
+      - name: Pull latest changes (avoid non-fast-forward)
+        run: |
+          git pull --rebase --autostash origin ${{ github.ref_name }} || true
+          
       - name: Commit changes
         run: |
           git config user.name "${{ github.actor }}"
