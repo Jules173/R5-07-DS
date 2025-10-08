@@ -11,9 +11,9 @@ public class Q3 {
 
         int N = Integer.parseInt(args[0]);
         for (int i = 1; i <= N; i++) {
-            System.out.print(i);
+            System.out.println(i);
             if (i < N) {
-                System.out.print(" ");
+                System.out.print("");
             }
         }
         System.out.println();
